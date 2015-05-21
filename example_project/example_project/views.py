@@ -15,3 +15,9 @@ class ExampleOAIProvider(OAIProvider):
 
     def sets(self, obj):
         return []
+
+    def sets_list(self):
+        return [
+            {'spec': 'Video', 'name': 'Vidéo', 'description': 'Patate'},
+            {'spec': 'Video2', 'name': 'Vidéo2', 'description': 'Patate2'}
+        ]

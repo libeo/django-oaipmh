@@ -1,0 +1,60 @@
+{% extends "django_oaipmh/base.xml" %}
+
+{% block content %}
+<ListSets>
+  {% for set in sets %}
+  <set>
+    <setSpec>{{ set.spec }}</setSpec>
+    <setName>{{ set.name }}</setName>
+    <setDescription/>
+    <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+      {% if set.title %}
+      <dc:title>{{ set.title }}</dc:title>
+      {% endif %}
+      {% if set.creator %}
+      <dc:creator>{{ set.creator }}</dc:creator>
+      {% endif %}
+      {% if set.subject %}
+      <dc:subject>{{ set.subject }}</dc:subject>
+      {% endif %}
+      {% if set.description %}
+      <dc:description>{{ set.description }}</dc:description>
+      {% endif %}
+      {% if set.publisher %}
+      <dc:publisher>{{ set.publisher }}</dc:publisher>
+      {% endif %}
+      {% if set.contributor %}
+      <dc:contributor>{{ set.contributor }}</dc:contributor>
+      {% endif %}
+      {% if set.date %}
+      <dc:date>{{ set.date }}</dc:date>
+      {% endif %}
+      {% if set.type %}
+      <dc:type>{{ set.type }}</dc:type>
+      {% endif %}
+      {% if set.format %}
+      <dc:format>{{ set.format }}</dc:format>
+      {% endif %}
+      {% if set.source %}
+      <dc:source>{{ set.source }}</dc:source>
+      {% endif %}
+      {% if set.record_identifier %}
+      <dc:identifier>{{ set.record_identifier }}</dc:identifier>
+      {% endif %}
+      {% if set.language %}
+      <dc:language>{{ set.language }}</dc:language>
+      {% endif %}
+      {% if set.relation %}
+      <dc:relation>{{ set.relation }}</dc:relation>
+      {% endif %}
+      {% if set.coverage %}
+      <dc:coverage>{{ set.coverage }}</dc:coverage>
+      {% endif %}
+      {% if set.rights %}
+      <dc:rights>{{ set.rights }}</dc:rights>
+      {% endif %}
+    </oai_dc:dc>
+  </set>
+  {% endfor %}
+</ListSets>
+{% endblock %}

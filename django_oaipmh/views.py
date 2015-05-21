@@ -36,6 +36,12 @@ class OAIProvider(TemplateView):
         # datetime object was last modified
         pass
 
+    def sets_list(self):
+        # list/generator/queryset of sets to be made available via oai
+        return [
+            {'spec': 'Example', 'name': 'Example', 'description': 'desc'},
+        ]
+
     def oai_identifier(self, obj):
         # oai identifier for a given object
         return 'oai:%s:%s' % (Site.objects.get_current().domain,
@@ -44,7 +50,7 @@ class OAIProvider(TemplateView):
     def record_identifier(self, obj):
         # oai identifier for a given object
         return 'http://%s:%s' % (Site.objects.get_current().domain,
-                              obj.get_absolute_url())
+                                 obj.get_absolute_url())
 
     def sets(self, obj):
         # list of set identifiers for a given object
@@ -103,6 +109,10 @@ class OAIProvider(TemplateView):
             items.append(item_info)
         return self.render_to_response({'items': items})
 
+    def list_sets(self):
+        self.template_name = 'django_oaipmh/list_sets.xml'
+        return self.render_to_response({'sets': self.sets_list()})
+
     def list_metadata_formats(self):
         self.template_name = 'django_oaipmh/list_metadata_formats.xml'
         return self.render_to_response({})
@@ -150,12 +160,13 @@ class OAIProvider(TemplateView):
         if self.oai_verb == 'ListMetadataFormats':
             return self.list_metadata_formats()
 
+        if self.oai_verb == 'ListSets':
+            return self.list_sets()
+
         # OAI verbs still TODO:
         #
         # GetRecord
         #  - will probably require an item_by_id method similar items
-        # ListSets
-        #  - could start with noSetHierarchy in initial implementation
 
         else:
             # if no verb = bad request response
