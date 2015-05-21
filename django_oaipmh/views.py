@@ -103,6 +103,10 @@ class OAIProvider(TemplateView):
             items.append(item_info)
         return self.render_to_response({'items': items})
 
+    def list_metadata_formats(self):
+        self.template_name = 'django_oaipmh/list_metadata_formats.xml'
+        return self.render_to_response({})
+
     def list_records(self):
         self.template_name = 'django_oaipmh/list_records.xml'
         items = []
@@ -143,13 +147,13 @@ class OAIProvider(TemplateView):
         if self.oai_verb == 'ListRecords':
             return self.list_records()
 
+        if self.oai_verb == 'ListMetadataFormats':
+            return self.list_metadata_formats()
+
         # OAI verbs still TODO:
         #
         # GetRecord
         #  - will probably require an item_by_id method similar items
-        # ListMetadataFormats
-        # ListRecords
-        #  - should have some overlap/reusability with ListIdentifiers
         # ListSets
         #  - could start with noSetHierarchy in initial implementation
 
