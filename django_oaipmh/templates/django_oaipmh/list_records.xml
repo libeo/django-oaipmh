@@ -1,0 +1,9 @@
+{% extends "django_oaipmh/base.xml" %}
+
+{% block content %}
+  <ListRecords>
+    {% for i in items %}
+        {% include "django_oaipmh/record.xml" with item=i %}
+    {% endfor %}
+  </ListRecords>
+{% endblock %}

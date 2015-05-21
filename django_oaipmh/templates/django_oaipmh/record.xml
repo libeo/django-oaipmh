@@ -1,0 +1,58 @@
+<record>
+    <header>
+        <identifier>{{ item.identifier }}</identifier>
+        <datestamp>{{ item.last_modified }}</datestamp>
+        {% for set in item.sets %}
+        <setSpec>{{ set }}</setSpec>
+        {% endfor %}
+    </header>
+    <metadata>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+            {% if item.title %}
+            <dc:title>{{ item.title }}</dc:title>
+            {% endif %}
+            {% if item.creator %}
+            <dc:creator>{{ item.creator }}</dc:creator>
+            {% endif %}
+            {% if item.subject %}
+            <dc:subject>{{ item.subject }}</dc:subject>
+            {% endif %}
+            {% if item.description %}
+            <dc:description>{{ item.description }}</dc:description>
+            {% endif %}
+            {% if item.publisher %}
+            <dc:publisher>{{ item.publisher }}</dc:publisher>
+            {% endif %}
+            {% if item.contributor %}
+            <dc:contributor>{{ item.contributor }}</dc:contributor>
+            {% endif %}
+            {% if item.date %}
+            <dc:date>{{ item.date }}</dc:date>
+            {% endif %}
+            {% if item.type %}
+            <dc:type>{{ item.type }}</dc:type>
+            {% endif %}
+            {% if item.format %}
+            <dc:format>{{ item.format }}</dc:format>
+            {% endif %}
+            {% if item.source %}
+            <dc:source>{{ item.source }}</dc:source>
+            {% endif %}
+            {% if item.record_identifier %}
+            <dc:identifier>{{ item.record_identifier }}</dc:identifier>
+            {% endif %}
+            {% if item.language %}
+            <dc:language>{{ item.language }}</dc:language>
+            {% endif %}
+            {% if item.relation %}
+            <dc:relation>{{ item.relation }}</dc:relation>
+            {% endif %}
+            {% if item.coverage %}
+            <dc:coverage>{{ item.coverage }}</dc:coverage>
+            {% endif %}
+            {% if item.rights %}
+            <dc:rights>{{ item.rights }}</dc:rights>
+            {% endif %}
+        </oai_dc:dc>
+    </metadata>
+</record>

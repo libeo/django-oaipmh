@@ -41,6 +41,11 @@ class OAIProvider(TemplateView):
         return 'oai:%s:%s' % (Site.objects.get_current().domain,
                               obj.get_absolute_url())
 
+    def record_identifier(self, obj):
+        # oai identifier for a given object
+        return 'http://%s:%s' % (Site.objects.get_current().domain,
+                              obj.get_absolute_url())
+
     def sets(self, obj):
         # list of set identifiers for a given object
         return []
@@ -98,6 +103,21 @@ class OAIProvider(TemplateView):
             items.append(item_info)
         return self.render_to_response({'items': items})
 
+    def list_records(self):
+        self.template_name = 'django_oaipmh/list_records.xml'
+        items = []
+        # TODO: eventually we will need pagination with oai resumption tokens
+        # should be able to model similar to django.contrib.sitemap
+        for i in self.items():
+            item_info = {
+                'identifier': self.oai_identifier(i),
+                'record_identifier': self.record_identifier(i),
+                'last_modified': self.last_modified(i),
+                'sets': self.sets(i)
+            }
+            items.append(item_info)
+        return self.render_to_response({'items': items, 'metadataPrefix': 'oai_dc'})
+
     def error(self, code, text):
         # TODO: HTTP error response code? maybe 400 bad request?
         # NOTE: may need to revise, could have multiple error codes/messages
@@ -120,6 +140,9 @@ class OAIProvider(TemplateView):
         if self.oai_verb == 'ListIdentifiers':
             return self.list_identifiers()
 
+        if self.oai_verb == 'ListRecords':
+            return self.list_records()
+
         # OAI verbs still TODO:
         #
         # GetRecord
@@ -136,5 +159,5 @@ class OAIProvider(TemplateView):
             if self.oai_verb is None:
                 error_msg = 'The request did not provide any verb.'
             else:
-                'The verb "%s" is illegal' % self.oai_verb
+                error_msg = 'The verb "%s" is illegal' % self.oai_verb
             return self.error('badVerb', error_msg)

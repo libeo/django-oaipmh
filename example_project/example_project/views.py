@@ -11,7 +11,7 @@ class ExampleOAIProvider(OAIProvider):
         return FlatPage.objects.all()
 
     def last_modified(self, obj):
-        return datetime.now()
+        return datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
 
     def sets(self, obj):
         return []
