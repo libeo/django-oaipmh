@@ -21,6 +21,16 @@ from django.views.generic import TemplateView
 
 class OAIProvider(TemplateView):
     content_type = 'text/xml'  # possibly application/xml ?
+    identify_config = {
+        'name': 'oai repo name',
+        'earliest_date': '1990-02-01T12:00:00Z',
+        'granularity': 'YYYY-MM-DDThh:mm:ssZ',
+        'compression': 'deflate',
+        'identifier_scheme': 'oai',
+        'repository_identifier': 'lcoa1.loc.gov',
+        'identifier_delimiter': ':',
+        'sample_identifier': 'oai:lcoa1.loc.gov:loc.music/musdi.002'
+    }
 
     # modeling on sitemaps: these methods should be implemented
     # when extending OAIProvider
@@ -76,22 +86,22 @@ class OAIProvider(TemplateView):
         # TODO: these should probably be class variables/configurations
         # that extending classes could set
         identify_data = {
-            'name': 'oai repo name',
+            'name': self.identify_config['name'],
             # perhaps an oai_admins method with default logic settings.admins?
             'admins': (email for name, email in settings.ADMINS),
-            'earliest_date': '1990-02-01T12:00:00Z',   # placeholder
+            'earliest_date': self.identify_config['earliest_date'],   # placeholder
             # should probably be a class variable/configuration
             'deleted': 'no',  # no, transient, persistent (?)
             # class-level variable/configuration (may affect templates also)
-            'granularity': 'YYYY-MM-DDThh:mm:ssZ',  # or YYYY-MM-DD
+            'granularity': self.identify_config['granularity'],  # or YYYY-MM-DD
             # class-level config?
-            'compression': 'deflate',  # gzip?  - optional
+            'compression': self.identify_config['compression'],  # gzip?  - optional
             # description - optional
             # (place-holder values from OAI docs example)
-            'identifier_scheme': 'oai',
-            'repository_identifier': 'lcoa1.loc.gov',
-            'identifier_delimiter': ':',
-            'sample_identifier': 'oai:lcoa1.loc.gov:loc.music/musdi.002'
+            'identifier_scheme': self.identify_config['identifier_scheme'],
+            'repository_identifier': self.identify_config['repository_identifier'],
+            'identifier_delimiter': self.identify_config['identifier_delimiter'],
+            'sample_identifier': self.identify_config['sample_identifier']
         }
         return self.render_to_response(identify_data)
 
