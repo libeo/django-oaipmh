@@ -42,6 +42,12 @@ class OAIProvider(TemplateView):
         # - could possibly include find by id for GetRecord here also...
         pass
 
+    def item(self, item_identifier):
+        # specific item for GetRecord verb.
+        # item_identifier will be what is returned by oai_identifier()
+        # for exemple 'oai:example.com:page/2'
+        pass
+
     def last_modified(self, obj):
         # datetime object was last modified
         pass
@@ -129,18 +135,35 @@ class OAIProvider(TemplateView):
 
     def list_records(self):
         self.template_name = 'django_oaipmh/list_records.xml'
-        items = []
+        items = self.items()
         # TODO: eventually we will need pagination with oai resumption tokens
         # should be able to model similar to django.contrib.sitemap
-        for i in self.items():
-            item_info = {
-                'identifier': self.oai_identifier(i),
-                'record_identifier': self.record_identifier(i),
-                'last_modified': self.last_modified(i),
-                'sets': self.sets(i)
-            }
-            items.append(item_info)
+        for i in items:
+            i.identifier = self.oai_identifier(i)
+            i.record_identifier = self.record_identifier(i)
+            i.last_modified = self.last_modified(i)
+            i.sets = self.sets(i)
         return self.render_to_response({'items': items, 'metadataPrefix': 'oai_dc'})
+
+    def get_record(self):
+        self.template_name = 'django_oaipmh/get_record.xml'
+
+        item_identifier = self.request.GET.get('identifier', None)
+        if item_identifier is None:
+            return self.error('badArgument',
+                ' The request includes illegal arguments or is missing required arguments.')
+        try:
+            item = self.item(item_identifier)
+        except Exception:
+            return self.error('idDoesNotExist',
+                'The value of the identifier argument is unknown or illegal in this repository.')
+
+        item.identifier = self.oai_identifier(item)
+        item.record_identifier = self.record_identifier(item)
+        item.last_modified = self.last_modified(item)
+        item.sets = self.sets(item)
+
+        return self.render_to_response({'item': item})
 
     def error(self, code, text):
         # TODO: HTTP error response code? maybe 400 bad request?
@@ -173,10 +196,8 @@ class OAIProvider(TemplateView):
         if self.oai_verb == 'ListSets':
             return self.list_sets()
 
-        # OAI verbs still TODO:
-        #
-        # GetRecord
-        #  - will probably require an item_by_id method similar items
+        if self.oai_verb == 'GetRecord':
+            return self.get_record()
 
         else:
             # if no verb = bad request response

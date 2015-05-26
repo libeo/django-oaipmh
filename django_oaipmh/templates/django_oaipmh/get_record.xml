@@ -1,0 +1,7 @@
+{% extends "django_oaipmh/base.xml" %}
+
+{% block content %}
+  <GetRecord>
+    {% include "django_oaipmh/record.xml" with item=item %}
+  </GetRecord>
+{% endblock %}
